@@ -105,6 +105,7 @@ async function loadBuffers() {
   audioCtx = new (window.AudioContext||window.webkitAudioContext)();
   masterGain = audioCtx.createGain();
   masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+  masterGain._targetPeak = 0.9886; // -0.1 dBFS (10^(-0.1/20))
   masterGain.connect(audioCtx.destination);
   async function load(url) {
     const res = await fetch(url); const data = await res.arrayBuffer();
@@ -148,7 +149,7 @@ function fadeIn() {
   const t = audioCtx.currentTime;
   masterGain.gain.cancelScheduledValues(t);
   masterGain.gain.setValueAtTime(masterGain.gain.value, t);
-  masterGain.gain.linearRampToValueAtTime(1, t + 2.5);
+  masterGain.gain.linearRampToValueAtTime(0.9886, t + 2.5);
 }
 
 function fadeOut() {
